@@ -1,7 +1,23 @@
-h1 Hello World
-form(action="/",METHOD="POST")
-    button UPDATE
-ol
-    each country in countries
-        li= country.Country
-        button view
+extend ../layouts/common.pug
+block content
+    .ml-5
+        h1 Hello World
+        form(action="/covid",METHOD="POST")
+            button.btn.btn-primary UPDATE
+        form(action="/covid/search",METHOD="GET")
+            input(type="text" name="q" placeholder="type...")
+            button.btn.btn-primary.ml-2 Search
+        h2 GLOBAL
+        h3= "NewConfirmed: " + global.NewConfirmed
+        h3= "NewDeaths: " + global.NewDeaths
+        h3= "NewRecovered: " + global.NewRecovered
+        h3= "TotalConfirmed: " + global.TotalConfirmed
+        h3= "TotalDeaths: " + global.TotalDeaths
+        h3= "TotalRecovered: " + global.TotalRecovered
+        table
+            each country in countries
+                tr
+                    td
+                        li= country.Country
+                    td
+                        a.btn.btn-primary(href="/covid/view/"+country.CountryCode) view
