@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const chatUsersSchema = mongoose.Schema({
+    email:String,
+    password:String,
     messages:Array,
-    color:String
 })
 
 let ChatUsers = mongoose.model('chatusers',chatUsersSchema);

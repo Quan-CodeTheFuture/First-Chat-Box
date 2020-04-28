@@ -2,14 +2,12 @@ extend ../layouts/common.pug
 block content
     h1 Chat Box
 
+    #list
     .input-group
         .input-group-prepend
             span.input-group-text Text
         input#myInput.form-control(type='text', placeholder='Text', aria-label='')
         .input-group-append
             span.input-group-text Text
-    //- .d-flex.flex-row-reverse
-    //-     .bg-dark.text-white.p-2
-    //-         span.align-middle I love you
-    #list
+            
     script(type='text/javascript', src='/chatbox.js')
