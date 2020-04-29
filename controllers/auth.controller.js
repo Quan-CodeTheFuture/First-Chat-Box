@@ -4,10 +4,9 @@ module.exports.getLogin = (req,res) => {
 }
 
 module.exports.postLogin = async (req,res) => {
-    let email = req.body.email;
+    let username = req.body.username;
     let password = req.body.password;
-    // console.log(email);
-    let user = await ChatUsers.findOne({email:email});
+    let user = await ChatUsers.findOne({username:username});
     if (!user){
         res.render("auth/login",{
             errors:['user does not exist']

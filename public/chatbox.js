@@ -12,7 +12,7 @@ async function launch(){
         messagesHTML.push(`
         <div class="d-flex flex-row${messages[i].position}">
             <div class="d-flex flex-column bd-highlight mb-3" style="width:300px">
-                <div class="name">${messages[i].email}</div>
+                <div class="name">${messages[i].username}</div>
                 <div class="bg-${messages[i].color_bg} text-${messages[i].color_text} p-2">
                     <span class="align-middle">${messages[i].content}</span>
                 </div>
@@ -38,7 +38,7 @@ function getText(){
             if(document.cookie.indexOf(dataMasterJson.id) !== -1){
                 messages.push({
                     id:dataMasterJson.id,
-                    email:dataMasterJson.email,
+                    username:dataMasterJson.username,
                     content:input.value,
                     color_bg:'dark',
                     color_text:'white',
@@ -47,7 +47,7 @@ function getText(){
             } else {
                 messages.push({
                     id:dataMasterJson.id,
-                    email:dataMasterJson.email,
+                    username:dataMasterJson.username,
                     content:input.value,
                     color_bg:'dark',
                     color_text:'white',
@@ -60,7 +60,7 @@ function getText(){
                 messagesHTML.push(`
                 <div class="d-flex flex-row${messages[i].position}">
                     <div class="d-flex flex-column bd-highlight mb-3" style="width:300px">
-                        <div class="name">${messages[i].email}</div>
+                        <div class="name">${messages[i].username}</div>
                         <div class="bg-${messages[i].color_bg} text-${messages[i].color_text} p-2">
                             <span class="align-middle">${messages[i].content}</span>
                         </div>

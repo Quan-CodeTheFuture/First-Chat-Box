@@ -29,7 +29,7 @@ module.exports.getAPI = async(req,res) => {
     res.json({
         id:userMaster.id,
         messages:userMaster.messages,
-        email:userMaster.email
+        username:userMaster.username
     });
 }
 
