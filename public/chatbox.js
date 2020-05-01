@@ -2,6 +2,7 @@ let input = document.getElementById('myInput');
 let list = document.getElementById('list');
 let buttonUpload = document.getElementById('button_upload');
 let uploadFileInput = document.getElementById('uploadFile');
+let lengthText = 35;
 
 input.addEventListener("keyup", getText());
 buttonUpload.addEventListener("click", getFile());
@@ -54,7 +55,7 @@ async function launch() {
     for (let i = 0; i < messages.length; i++) {
         if (messages[i].content && messages[i].content !== '') {
             let width = '';
-            if (messages[i].content.length > 30) {
+            if (messages[i].content.length > 35) {
                 width = 'style="width:300px"'
             }
             temp = `
@@ -84,10 +85,13 @@ async function launch() {
 launch();
 setInterval(() => {
     launch();
-}, 2000);
+}, 500);
 function getText() {
     return async (event) => {
         if (event.keyCode === 13) {
+            if(input.value==''){
+                return;
+            }
             // console.log(await getResponse.json())
             let dataMaster = await fetch('/chat/api');
             let dataMasterJson = await dataMaster.json();
