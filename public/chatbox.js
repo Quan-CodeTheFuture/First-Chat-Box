@@ -23,8 +23,8 @@ async function getFile() {
             })
         } else {
             messages.push({
-                id: dataMasterJson.id,
-                username: dataMasterJson.username,
+                id: dataJson.id,
+                username: dataJson.username,
                 image: dataJson.imagePath,
                 color_bg: 'dark',
                 color_text: 'white',
