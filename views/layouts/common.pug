@@ -1,7 +1,7 @@
 head
     link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
 body
-    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
         a.nav-link(href='/')
             | Home 
         span.sr-only (current)
@@ -9,4 +9,5 @@ body
         a.navbar-brand(href='#')
             if user
                 p= user.username
-    block content
+    div(style="margin:100px 50px")
+        block content
