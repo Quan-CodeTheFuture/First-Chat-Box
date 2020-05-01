@@ -1,11 +1,11 @@
 let input = document.getElementById('myInput');
 let list = document.getElementById('list');
 let buttonUpload = document.getElementById('button_upload');
-let uploadfileInput = document.getElementById('uploadfile');
+let uploadFileInput = document.getElementById('uploadFile');
 
 input.addEventListener("keyup", getText());
 buttonUpload.addEventListener("click", getFile());
-uploadfileInput.addEventListener('change',()=>{
+uploadFileInput.addEventListener('change',()=>{
     buttonUpload.disabled = false;
 })
 async function getFile() {
