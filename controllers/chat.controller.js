@@ -1,5 +1,6 @@
 let fetch = require('node-fetch');
 let ChatUsers = require('../models/chatUsers.model');
+let imagePath = ''; 
 module.exports.getChatBox = async(req,res) => {
     console.log(req.signedCookies.userId);
     res.render('chat/index.pug');
@@ -7,6 +8,9 @@ module.exports.getChatBox = async(req,res) => {
 
 module.exports.getAPI = async(req,res) => {
     // console.log(await ChatUsers.find());
+    // if(imagePath){
+    //     path = imagePath;
+    // }
     let data= await ChatUsers.find();
     let messages = [];
     for(let i = 0; i < data.length; i++){
@@ -26,17 +30,20 @@ module.exports.getAPI = async(req,res) => {
 
 
     let userMaster = await ChatUsers.findOne({_id:req.signedCookies.userId});
-    res.json({
+    let dataJson = {
         id:userMaster.id,
         messages:userMaster.messages,
-        username:userMaster.username
-    });
+        username:userMaster.username,
+        imagePath:imagePath
+    } 
+    
+    res.json(dataJson);
 }
 
 module.exports.postChatBox = async(req,res) => {
     let messages = req.body;
+    imagePath = '';
     // console.log(messages);
-
     await ChatUsers.updateOne({_id:req.signedCookies.userId},{
         messages:messages
     })
@@ -47,5 +54,18 @@ module.exports.postChatBox = async(req,res) => {
 
     // res.render('chat/index.pug');
 
-    res.send();
+    res.json({
+        status:"success"
+    });
+}
+
+module.exports.postAPI = async(req,res) => {
+    // console.log(req.file);
+    let path = req.file.path;
+    path = path.split('\\').splice(1);
+    path = path.join('/');
+    // console.log(path);
+    imagePath = path;
+    
+    res.redirect('/chat/interface');
 }
