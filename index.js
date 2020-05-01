@@ -21,11 +21,17 @@ app.use(express.static('public'));
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(cookieParser(process.env.SESSION_SECRET));
-
 app.use("/covid", mainRoute);
 app.use("/chat",authMiddleware.requireAuth,chatBoxRoute);
 app.use("/auth",authRoute);
 
+app.get("/",(req,res) => {
+    res.send(`
+        <h1>Hello</h1>
+        <a href='/covid/'>Covid</a>
+        <a href='/chat/interface'>Chat Box</a>
+    `)
+})
 app.listen(port,() => {
     console.log("Server listen on port "+ port)
 })
