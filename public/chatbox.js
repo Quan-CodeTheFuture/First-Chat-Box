@@ -5,7 +5,9 @@ let uploadfileInput = document.getElementById('uploadfile');
 
 input.addEventListener("keyup", getText());
 buttonUpload.addEventListener("click", getFile());
-
+uploadfileInput.addEventListener('change',()=>{
+    buttonUpload.disabled = false;
+})
 async function getFile() {
     console.log('uploading');
     let data = await fetch('/chat/api');

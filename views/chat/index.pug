@@ -13,6 +13,6 @@ block content
     form#formupload(action="/chat/api" method="POST" enctype='multipart/form-data')
         label(for="uploadfile") File
         input#uploadfile.form-control-file(type='file' name="uploadfile")
-        button#button_upload.btn.btn-primary upload
+        button#button_upload.btn.btn-primary(disabled) upload
     
     script(type='text/javascript', src='/chatbox.js')
