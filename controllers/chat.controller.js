@@ -17,6 +17,7 @@ module.exports.getAPI = async(req,res) => {
 
 module.exports.postChatBox = async(req,res) => {
     let dataUsers = await ChatUsers.find();
+    let dataMaster = await ChatUsers.findOne({_id:req.signedCookies.userId});
     let indexMaster;
     if(req.file){
         imagePath = req.file.path;
@@ -25,9 +26,8 @@ module.exports.postChatBox = async(req,res) => {
     }
     for(let i = 0; i < dataUsers.length; i++){
         let messages = dataUsers[i].messages;
-        let message = {
-            username:dataUsers[i].username,
-        }
+        let message = {};
+        message.username = dataMaster.username;
 
         if(req.body.text){
             message.content = req.body.text;
