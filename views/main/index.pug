@@ -8,12 +8,13 @@ block content
             input(type="text" name="q" placeholder="type...")
             button.btn.btn-primary.ml-2 Search
         h2 GLOBAL
-        h3= "NewConfirmed: " + global.NewConfirmed
-        h3= "NewDeaths: " + global.NewDeaths
-        h3= "NewRecovered: " + global.NewRecovered
-        h3= "TotalConfirmed: " + global.TotalConfirmed
-        h3= "TotalDeaths: " + global.TotalDeaths
-        h3= "TotalRecovered: " + global.TotalRecovered
+        if (global)
+            h3= "NewConfirmed: " + global.NewConfirmed
+            h3= "NewDeaths: " + global.NewDeaths
+            h3= "NewRecovered: " + global.NewRecovered
+            h3= "TotalConfirmed: " + global.TotalConfirmed
+            h3= "TotalDeaths: " + global.TotalDeaths
+            h3= "TotalRecovered: " + global.TotalRecovered
         table
             each country in countries
                 tr

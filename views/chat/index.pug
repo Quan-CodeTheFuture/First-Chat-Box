@@ -10,7 +10,7 @@ block content
         .input-group-append
             span.input-group-text Text
         .btn.btn-primary#button_reset Reset
-    form(action="/chat/api" method="POST" enctype='multipart/form-data')
+    form(action="/chat/interface" method="POST" enctype='multipart/form-data')
         label(for="uploadFile") File
         input#uploadFile.form-control-file(type='file' name="uploadFile")
         button#button_upload.btn.btn-primary(disabled) upload

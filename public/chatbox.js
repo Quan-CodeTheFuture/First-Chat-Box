@@ -3,128 +3,98 @@ let list = document.getElementById('list');
 let buttonUpload = document.getElementById('button_upload');
 let uploadFileInput = document.getElementById('uploadFile');
 let lengthText = 35;
+let messagesHTML = [];
+
+async function getUrl(url){
+    let req = await fetch(url);
+    let json = await req.json();
+    return json
+}
 
 input.addEventListener("keyup", getText());
-buttonUpload.addEventListener("click", getFile());
 uploadFileInput.addEventListener('change',()=>{
     buttonUpload.disabled = false;
 })
-async function getFile() {
-    console.log('uploading');
-    let data = await fetch('/chat/api');
-    let dataJson = await data.json();
-    let messages = dataJson.messages;
-    if (dataJson.imagePath && dataJson.imagePath !== '') {
-        if (document.cookie.indexOf(dataJson.id) !== -1) {
-            messages.push({
-                id: dataJson.id,
-                username: dataJson.username,
-                image: dataJson.imagePath,
-                color_bg: 'dark',
-                color_text: 'white',
-                position: '-reverse'
-            })
-        } else {
-            messages.push({
-                id: dataJson.id,
-                username: dataJson.username,
-                image: dataJson.imagePath,
-                color_bg: 'dark',
-                color_text: 'white',
-                position: ''
-            })
-
+async function launch() {
+    let tempMessages = await getUrl('/chat/api');
+    tempMessages = tempMessages.messages;
+    if(tempMessages!==[] && tempMessages){
+        messagesHTML = [];
+        for (let i = 0; i < tempMessages.length; i++){
+            if(tempMessages[i].content){
+                messagesHTML.push(`
+                    <div class="d-flex flex-row${tempMessages[i].pos}">
+                        <div class="d-flex flex-column bd-highlight mb-3">
+                            <div class="name">${tempMessages[i].username}</div>
+                            <div class="bg-dark text-white p-2">
+                                <span class="align-middle">${tempMessages[i].content}</span>
+                            </div>
+                        </div>
+                    </div>
+                    `                
+                )
+            }; 
+            if(tempMessages[i].imagePath) {
+                messagesHTML.push(`
+                    <div class="d-flex flex-row${tempMessages[i].pos}">
+                        <div class="d-flex flex-column bd-highlight mb-3" style="width:300px">
+                            <div class="name">${tempMessages[i].username}</div>
+                            <img src="../${tempMessages[i].imagePath}" style="width:300px"/>
+                        </div>
+                    </div>
+                    `
+                )
+            }
         }
     }
-    fetch('/chat/interface', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: JSON.stringify(messages) // body data type must match "Content-Type" header
-    }).then(a => a.json()).then(value => console.log(value));
+    if(messagesHTML !== [] && messagesHTML){
+        list.innerHTML = messagesHTML.join('');
+    }
 }
-async function launch() {
-    let dataMaster = await fetch('/chat/api');
-    let dataMasterJson = await dataMaster.json();
-    let messages = dataMasterJson.messages;
 
-    let messagesHTML = [];
-    let temp = ``;
-    for (let i = 0; i < messages.length; i++) {
-        if (messages[i].content && messages[i].content !== '') {
-            let width = '';
-            if (messages[i].content.length > 35) {
-                width = 'style="width:300px"'
-            }
-            temp = `
-            <div class="d-flex flex-row${messages[i].position}">
-                <div class="d-flex flex-column bd-highlight mb-3" ${width}>
-                    <div class="name">${messages[i].username}</div>
-                    <div class="bg-${messages[i].color_bg} text-${messages[i].color_text} p-2">
-                        <span class="align-middle">${messages[i].content}</span>
-                    </div>
-                </div>
-            </div>`
-        }
-        if (messages[i].image && messages[i].image !== '') {
-            let path = '../' + messages[i].image
-            temp = `
-                <div class="d-flex flex-row${messages[i].position}">
-                    <div class="d-flex flex-column bd-highlight mb-3" style="width:300px">
-                        <div class="name">${messages[i].username}</div>
-                        <img src="${path}" style="width:300px"/>
-                    </div>
-                </div>`;
-        }
-        messagesHTML.push(temp);
-    };
-    list.innerHTML = messagesHTML.join('');
-}
 launch();
 setInterval(() => {
     launch();
-}, 500);
+}, 3000);
+
 function getText() {
     return async (event) => {
         if (event.keyCode === 13) {
             if(input.value==''){
                 return;
             }
-            // console.log(await getResponse.json())
-            let dataMaster = await fetch('/chat/api');
-            let dataMasterJson = await dataMaster.json();
-            let messages = dataMasterJson.messages;
-            if (document.cookie.indexOf(dataMasterJson.id) !== -1) {
-                messages.push({
-                    id: dataMasterJson.id,
-                    username: dataMasterJson.username,
-                    content: input.value,
-                    color_bg: 'dark',
-                    color_text: 'white',
-                    position: '-reverse'
-                })
-            } else {
-                messages.push({
-                    id: dataMasterJson.id,
-                    username: dataMasterJson.username,
-                    content: input.value,
-                    color_bg: 'dark',
-                    color_text: 'white',
-                    position: ''
-                })
-
-            };
-            fetch('/chat/interface', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: JSON.stringify(messages) // body data type must match "Content-Type" header
-            }).then(a => a.json()).then(value => console.log(value));
+            let text = input.value;
             input.value = '';
+            let responseTextChatBox = await fetch('/chat/interface',{
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text:text
+                }),
+            })
+            responseTextChatBox = await responseTextChatBox.json();
+
+            let messages = responseTextChatBox.messages;
+            messagesHTML = [];
+            for (let i = 0; i < messages.length; i++){
+                if(messages[i].content){
+                    messagesHTML.push(`
+                        <div class="d-flex flex-row${messages[i].pos}">
+                            <div class="d-flex flex-column bd-highlight mb-3">
+                                <div class="name">${messages[i].username}</div>
+                                <div class="bg-dark text-white p-2">
+                                    <span class="align-middle">${messages[i].content}</span>
+                                </div>
+                            </div>
+                        </div>
+                        `                
+                    )
+                }
+            }
+
+            list.innerHTML = messagesHTML.join('');
         }
     }
 }
