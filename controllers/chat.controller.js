@@ -1,64 +1,64 @@
 let ChatUsers = require('../models/chatUsers.model');
-let imagePath = ''; 
+const cloudinary = require("cloudinary").v2;
 
-module.exports.getChatBox = async(req,res) => {
-    console.log(req.signedCookies.userId);
-        res.render('chat/index.pug',{
+module.exports.getChatBox = async (req, res) => {
+    res.render('chat/index.pug', {
     });
 }
 
-module.exports.getAPI = async(req,res) => {
-    let dataUsersMaster = await ChatUsers.findOne({_id:req.signedCookies.userId});
+module.exports.getAPI = async (req, res) => {
+    let dataUsersMaster = await ChatUsers.findOne({ _id: req.signedCookies.userId });
     res.json({
-        status:"success",
-        messages:dataUsersMaster.messages
+        status: "success",
+        messages: dataUsersMaster.messages
     });
 }
 
-module.exports.postChatBox = async(req,res) => {
-    let dataUsers = await ChatUsers.find();
-    let dataMaster = await ChatUsers.findOne({_id:req.signedCookies.userId});
-    let indexMaster;
-    if(req.file){
-        imagePath = req.file.path;
-        let temp = imagePath.split('\\');
-        imagePath = temp.slice(1).join('/');
-    }
-    for(let i = 0; i < dataUsers.length; i++){
-        let messages = dataUsers[i].messages;
-        let message = {};
-        message.username = dataMaster.username;
-
-        if(req.body.text){
-            message.content = req.body.text;
-        } else {
-            message.imagePath = imagePath;
+module.exports.postChatBox = async (req, res) => {
+    try{
+        let dataUsers = await ChatUsers.find();
+        let dataMaster = await ChatUsers.findOne({ _id: req.signedCookies.userId });
+        let indexMaster;
+        let urlPath;
+        // console.log(req.files.uploadFile);
+        if (req.files) {
+            urlPath = await cloudinary.uploader.upload(req.files.uploadFile.tempFilePath);
+            urlPath = urlPath.url;
         }
-        
-        if (dataUsers[i].id === req.signedCookies.userId){
-            indexMaster = i;
-            message.pos = "-reverse";
-        } else {
-            message.pos = "";
+        for (let i = 0; i < dataUsers.length; i++) {
+            let messages = dataUsers[i].messages;
+            let message = {};
+            message.username = dataMaster.username;
+
+            if (req.body.text) {
+                message.content = req.body.text;
+            } else {
+                message.imagePath = urlPath;
+            }
+
+            if (dataUsers[i].id === req.signedCookies.userId) {
+                indexMaster = i;
+                message.pos = "-reverse";
+            } else {
+                message.pos = "";
+            }
+
+            messages.push(message);
+            await ChatUsers.replaceOne({ _id: dataUsers[i].id }, {
+                username: dataUsers[i].username,
+                password: dataUsers[i].password,
+                messages: messages
+            }, { upsert: true })
         }
-
-        messages.push(message);
-        await ChatUsers.replaceOne({_id:dataUsers[i].id},{
-            username:dataUsers[i].username,
-            password:dataUsers[i].password,
-            messages:messages
-        },{upsert:true})
+        if (req.files) {
+            res.redirect('/chat/interface');
+            return;
+        }
+        res.json({
+            status: "success",
+            messages: dataUsers[indexMaster].messages
+        });
+    } catch {
+        console.log("Something went wrong");
     }
-    if(req.file){
-        res.redirect('/chat/interface');
-        return;
-    }
-    res.json({
-        status:"success",
-        messages:dataUsers[indexMaster].messages
-    });
-}
-
-module.exports.postAPI = async(req,res) => {
-    // console.log(req.file);
 }
