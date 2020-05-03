@@ -92,6 +92,18 @@ function getText() {
                         `
                     )
                 }
+                if (tempMessages[i].imagePath) {
+                    messagesHTML.push(`
+                        <div class="d-flex flex-row${tempMessages[i].pos}">
+                            <div class="d-flex flex-column bd-highlight mb-3" style="width:300px">
+                                <div class="name">${tempMessages[i].username}</div>
+                                <img src="${tempMessages[i].imagePath}" style="width:300px"/>
+                            </div>
+                        </div>
+                        `
+                    )
+                }
+    
             }
 
             list.innerHTML = messagesHTML.join('');
